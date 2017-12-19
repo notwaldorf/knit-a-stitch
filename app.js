@@ -22,7 +22,7 @@ if (window.location.hash) {
   // This calls updateGrid with the right size;
   try {
     const decoded = atob(window.location.hash.slice(1));
-    parsePattern(decodeURIComponent(decoded));
+    parsePattern(decoded);
   } catch(err) {
     window.location.hash = 'not-a-valid-pattern-url';
     updateGrid();
@@ -132,7 +132,7 @@ function getPattern() {
     patternRow++;
   }
 
-  const encoded = btoa(encodeURIComponent(fullState));
+  const encoded = btoa(fullState);
   window.location.hash = `#${encoded}`;
   patternLink.href = window.location.href;
   patternOutput.textContent = `${pattern}`;
