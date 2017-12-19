@@ -33,12 +33,10 @@ function updateGrid() {
   if (numCols < 0) numCols = 0;
 
   // Do we need to resize the font?
-  const fontSize = parseInt(getComputedStyle(container).fontSize);
   const width = container.getBoundingClientRect().width;
-  // I have no idea why this 8 works btw.
-  const fontSizeThatFits = width / numCols - 8;
-  container.style.fontSize = Math.min(fontSize, fontSizeThatFits) + 'px';
-
+  const fontSizeThatFits = Math.floor(width / numCols) - 2;
+  container.style.fontSize = fontSizeThatFits + 'px';
+  
   // Don't lose the existing content. Add or remove rows from the end as needed.
   const currentRows = container.querySelectorAll('div.row').length;
 
