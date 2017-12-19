@@ -114,21 +114,21 @@ function getPattern() {
   let fullState = '';  // to encode in the hash.
   const rowList = container.querySelectorAll('div.row');
   for (let row of rowList) {
-    const [full, line] = getPatternLine(row.querySelectorAll('.stitch'));
+    const line = getPatternLine(row.querySelectorAll('.stitch'));
 
     // Skip this line if it's empty.
     if (line === '') {
       continue;
     }
 
-    fullState += full + '\n';
-
     // If we've seen this line before, do a repeat. Else, add it for later.
     if (mapOfRows[line] !== undefined) {
       pattern += `Row ${patternRow}: Repeat row ${mapOfRows[line]}\n`;
+      fullState += `R${mapOfRows[line]}\n`;
     } else {
       pattern += `Row ${patternRow}: ${line}\n`;
       mapOfRows[line] = patternRow;
+      fullState += `${line}\n`;
     }
     patternRow++;
   }
@@ -147,7 +147,7 @@ function getPatternLine(line) {
   }
 
   // Can we summarize repeated consecutive stitches?
-  return [pattern, summarize(pattern)];
+  return summarize(pattern);
 }
 
 function translateStitch(stitch) {
@@ -230,7 +230,7 @@ function summarize(line) {
   if (sequenceStitch != 0) {
     summarizedLine += sequenceStitch + sequenceCount + ' ';
   }
-  return summarizedLine;
+  return summarizedLine.trim();
 }
 
 // TODO: this function really sucks and duplicates things a billion times.
@@ -243,20 +243,60 @@ function parsePattern(pattern) {
   rowsInput.value = lines.length;
   let longestRow = 0;
 
+  let rowData = [];
   for (line of lines) {
-    const row = line.trim().split(' ');
+    const row = unsummarize(line).split(' ');
+    rowData.push(row);
     longestRow = Math.max(longestRow, row.length);
   }
+
   colsInput.value = longestRow;
   updateGrid();
 
   // Now fill it in.
   const allRows = container.querySelectorAll('div.row');
   for (let i = 0; i < lines.length; i++) {
-    const row = lines[i].trim().split(' ');
+    let row = rowData[i];
     const allCols = allRows[i].children;
+
+    // This may be a repeated row.
+    if (row.length === 1 && row[0].charAt(0) === 'r') {
+      const repeatWhat = row[0].slice(1) - 1;
+      row = rowData[repeatWhat];
+    }
+
     for (let j = 0; j < row.length; j++) {
       allCols[j].textContent = translateText(row[j]);
     }
   }
+}
+
+function unsummarize(line) {
+  if (line === '')
+    return '';
+
+  const stitches = line.toLowerCase().trim().split(' ');
+  let expanded = '';
+  for (let stitch of stitches) {
+    // This can be a single stitch: k p k2tog yo
+    // Or a run length stitch: k2 p2 (k2tog)x2 (yo)x2
+    const firstChar = stitch.charAt(0);
+
+    // Single stitch.
+    if (stitch === 'k' || stitch === 'p' || stitch === 'k2tog' || stitch === 'yo') {
+      expanded += stitch + ' ';
+    } else if (firstChar === 'k' || firstChar === 'p') {
+      // Repeaded K or P stitch
+      const count = parseInt(stitch.slice(1));
+      expanded += (firstChar + ' ').repeat(count);
+    } else if (firstChar === 'r') {
+      // It's a repeated row
+      return stitch;
+    } else {
+      // repeaded k2tog or yo.
+      const [full, which, count] = stitch.match(/\((.*)\)x(\d)/);
+      expanded += (which + ' ').repeat(count);
+    }
+  }
+  return expanded.trim();
 }
