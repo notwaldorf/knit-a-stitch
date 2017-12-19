@@ -18,7 +18,6 @@
   });
 })();
 
-
 function onClick(event) {
   const stitch = event.target;
   if (stitch.className !== 'stitch') {
@@ -145,14 +144,50 @@ function getPattern() {
 function getPatternLine(line) {
   let pattern = '';
   for (let i = 0; i < line.length; i++) {
-    pattern += translateStitch(line[i].textContent);
+    pattern += emojiToStitch(line[i].textContent);
   }
 
   // Can we summarize repeated consecutive stitches?
   return summarize(pattern);
 }
 
-function translateStitch(stitch) {
+function parsePattern(pattern) {
+  console.log('applying', pattern);
+  const lines = pattern.trim().split('\n');
+
+  // First, make the grid the right size.
+  rowsInput.value = lines.length;
+  let longestRow = 0;
+
+  let rowData = [];
+  for (line of lines) {
+    const row = unsummarize(line).split(' ');
+    rowData.push(row);
+    longestRow = Math.max(longestRow, row.length);
+  }
+
+  colsInput.value = longestRow;
+  updateGrid();
+
+  // Now fill it in.
+  const allRows = container.querySelectorAll('div.row');
+  for (let i = 0; i < lines.length; i++) {
+    let row = rowData[i];
+    const allCols = allRows[i].children;
+
+    // This may be a repeated row.
+    if (row.length === 1 && row[0].charAt(0) === 'r') {
+      const repeatWhat = row[0].slice(1) - 1;
+      row = rowData[repeatWhat];
+    }
+
+    for (let j = 0; j < row.length; j++) {
+      allCols[j].textContent = stitchToEmoji(row[j]);
+    }
+  }
+}
+
+function emojiToStitch(stitch) {
   switch (stitch) {
     case '✖️':
       return 'K '
@@ -174,7 +209,7 @@ function translateStitch(stitch) {
   }
 }
 
-function translateText(text) {
+function stitchToEmoji(text) {
   switch (text.toLowerCase()) {
     case 'k':
       return '✖️'
@@ -235,44 +270,6 @@ function summarize(line) {
   return summarizedLine.trim();
 }
 
-// TODO: this function really sucks and duplicates things a billion times.
-// But it's also midnight and maybe I don't care that much?
-function parsePattern(pattern) {
-  console.log('applying', pattern);
-  const lines = pattern.trim().split('\n');
-
-  // First, make the grid the right size.
-  rowsInput.value = lines.length;
-  let longestRow = 0;
-
-  let rowData = [];
-  for (line of lines) {
-    const row = unsummarize(line).split(' ');
-    rowData.push(row);
-    longestRow = Math.max(longestRow, row.length);
-  }
-
-  colsInput.value = longestRow;
-  updateGrid();
-
-  // Now fill it in.
-  const allRows = container.querySelectorAll('div.row');
-  for (let i = 0; i < lines.length; i++) {
-    let row = rowData[i];
-    const allCols = allRows[i].children;
-
-    // This may be a repeated row.
-    if (row.length === 1 && row[0].charAt(0) === 'r') {
-      const repeatWhat = row[0].slice(1) - 1;
-      row = rowData[repeatWhat];
-    }
-
-    for (let j = 0; j < row.length; j++) {
-      allCols[j].textContent = translateText(row[j]);
-    }
-  }
-}
-
 function unsummarize(line) {
   if (line === '')
     return '';
@@ -302,3 +299,48 @@ function unsummarize(line) {
   }
   return expanded.trim();
 }
+
+//
+// function stitchToEncoding(text) {
+//   switch (text.toLowerCase()) {
+//     case 'k':
+//       return '1'
+//       break;
+//     case 'p':
+//       return '2'
+//       break;
+//     case 'yo':
+//       return '3'
+//       break;
+//     case 'k2tog':
+//       return '4'
+//       break;
+//     case 'ssk':
+//       return '5'
+//       break;
+//     default:
+//       return ''
+//   }
+// }
+//
+// function encodingToStitch(text) {
+//   switch (text.toLowerCase()) {
+//     case '1':
+//       return 'k'
+//       break;
+//     case '2':
+//       return 'p'
+//       break;
+//     case '3':
+//       return 'yo'
+//       break;
+//     case '4':
+//       return 'k2tog'
+//       break;
+//     case '5':
+//       return 'ssk'
+//       break;
+//     default:
+//       return ''
+//   }
+// }
