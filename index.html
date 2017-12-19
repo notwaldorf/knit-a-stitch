@@ -130,21 +130,21 @@
   <body>
     <header>
       <img src="./logo.png" alt="knit-a-stitch">
-      <div>Draw a pattern, get the knitting instructions</div>
+      <div>Draw a pattern, get the knitting instructions.</div>
       <hr>
     </header>
 
     <div class="settings">
       <div>
         <label for="rows">Grid</label>
-        <input id="cols" class="short" type="number" value="12"> x
-        <input id="rows" class="short" type="number" value="12">
+        <input id="colsInput" class="short" type="number" value="12"> x
+        <input id="rowsInput" class="short" type="number" value="12">
       </div>
       <div>
         <label>Stitch</label>
         <div class="select">
           <span>▼</span>
-          <select id="stitch">
+          <select id="stitchSelect">
             <option value="✖️">✖️ (knit)</option>
             <option value="➖">➖ (purl)</option>
             <option value="🔘">🔘 (yo)</option>
@@ -165,15 +165,15 @@
   </body>
 
   <script>
-    cols.addEventListener('input', updateGrid);
-    rows.addEventListener('input', updateGrid);
+    colsInput.addEventListener('input', updateGrid);
+    rowsInput.addEventListener('input', updateGrid);
     container.addEventListener('click', onClick);
     updateGrid();
 
     function updateGrid() {
       container.innerHTML = '';
-      const numRows = parseInt(rows.value);
-      const numCols = parseInt(cols.value);
+      const numRows = parseInt(rowsInput.value);
+      const numCols = parseInt(colsInput.value);
 
       for (let i = 0; i < numRows; i++) {
         const div = document.createElement('div');
@@ -192,7 +192,7 @@
       if (button.localName !== 'button') {
         return;
       }
-      button.textContent = stitch.value;
+      button.textContent = stitchSelect.value;
     }
 
     function getPattern() {
@@ -224,16 +224,18 @@
       for (let i = 0; i < line.length; i++) {
         pattern += translateStitch(line[i].textContent);
       }
-      return pattern;
+
+      // Can we summarize repeated consecutive stitches?
+      return summarize(pattern);
     }
 
     function translateStitch(stitch) {
       switch (stitch) {
         case '✖️':
-          return 'K1 '
+          return 'K '
           break;
         case '➖':
-          return 'P1 '
+          return 'P '
           break;
         case '🔘':
           return 'YO '
@@ -247,6 +249,32 @@
         default:
           return ''
       }
+    }
+
+    function summarize(line) {
+      const stitches = line.split(' ');
+      let summarizedLine = '';
+      let sequenceStitch = '';
+      let sequenceCount = 0;
+
+      for (stitch of stitches) {
+        // If this is in the sequence stitch, add a new one to it.
+        if (sequenceStitch === stitch) {
+          sequenceCount++;
+        } else {
+          // This is a new sequence! Add the old one (unless this is the first run) and reset.
+          if (sequenceStitch != 0) {
+            summarizedLine += sequenceStitch + sequenceCount + ' ';
+          }
+          sequenceStitch = stitch;
+          sequenceCount = 1;
+        }
+      }
+      // Do we have a sequence we haven't added?
+      if (sequenceStitch != 0) {
+        summarizedLine += sequenceStitch + sequenceCount + ' ';
+      }
+      return summarizedLine;
     }
   </script>
 </html>
