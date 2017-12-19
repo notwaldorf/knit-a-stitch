@@ -125,6 +125,12 @@
         letter-spacing: inherit;
         cursor: pointer;
       }
+      #patternOutput {
+        white-space: pre;
+        max-width: 400px;
+        margin: 14px auto;
+        font-family: monospace;
+      }
     </style>
   </head>
   <body>
@@ -162,12 +168,26 @@
     </div>
     <div class="container" id="container"></div>
     <hr>
+    <div id="patternOutput"></div>
   </body>
 
   <script>
     colsInput.addEventListener('input', updateGrid);
     rowsInput.addEventListener('input', updateGrid);
+
     container.addEventListener('click', onClick);
+    container.addEventListener('mousedown', function(event) {
+      window.startDrag = true;
+      onClick(event);
+    });
+    container.addEventListener('mouseup', function() {
+      window.startDrag = false;
+    });
+    container.addEventListener('mouseover', function(event) {
+      if (window.startDrag) {
+        onClick(event);
+      }
+    })
     updateGrid();
 
     function updateGrid() {
@@ -216,7 +236,7 @@
         }
         patternRow++;
       }
-      console.log(pattern);
+      patternOutput.textContent = pattern;
     }
 
     function getPatternLine(line) {
