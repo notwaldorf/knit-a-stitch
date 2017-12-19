@@ -6,9 +6,10 @@ container.addEventListener('mousedown', function(event) {
   window.startDrag = true;
   onClick(event);
 });
-container.addEventListener('mouseup', function() {
+
+document.body.addEventListener('mouseup', function() {
   window.startDrag = false;
-});
+}, true);
 container.addEventListener('mouseover', function(event) {
   if (window.startDrag) {
     onClick(event);
