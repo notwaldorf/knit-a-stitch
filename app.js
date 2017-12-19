@@ -1,21 +1,31 @@
-colsInput.addEventListener('input', updateGrid);
-rowsInput.addEventListener('input', updateGrid);
+(function() {
+  colsInput.addEventListener('input', updateGrid);
+  rowsInput.addEventListener('input', updateGrid);
 
-container.addEventListener('click', onClick);
-container.addEventListener('mousedown', function(event) {
-  window.startDrag = true;
-  onClick(event);
-});
-
-document.body.addEventListener('mouseup', function() {
-  window.startDrag = false;
-}, true);
-container.addEventListener('mouseover', function(event) {
-  if (window.startDrag) {
+  container.addEventListener('click', onClick);
+  container.addEventListener('mousedown', function(event) {
+    window.startDrag = true;
     onClick(event);
-  }
-})
+  });
 
+  document.body.addEventListener('mouseup', function() {
+    window.startDrag = false;
+  }, true);
+  container.addEventListener('mouseover', function(event) {
+    if (window.startDrag) {
+      onClick(event);
+    }
+  });
+})();
+
+
+function onClick(event) {
+  const stitch = event.target;
+  if (stitch.className !== 'stitch') {
+    return;
+  }
+  stitch.textContent = stitchSelect.value;
+}
 
 // If there is a location, parse it.
 if (window.location.hash) {
@@ -97,14 +107,6 @@ function deleteLastChildThisManyTimes(node, num) {
     node.removeChild(node.lastChild);
     deleted++;
   }
-}
-
-function onClick(event) {
-  const stitch = event.target;
-  if (stitch.className !== 'stitch') {
-    return;
-  }
-  stitch.textContent = stitchSelect.value;
 }
 
 function getPattern() {
