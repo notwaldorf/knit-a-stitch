@@ -197,18 +197,34 @@
 
     function getPattern() {
       let pattern = '';
+      let mapOfRows = {};
+      let patternRow = 1;
       const rowList = container.querySelectorAll('div.row');
-      for (let i = 0; i < rowList.length; i++) {
-        const bits = rowList[i].querySelectorAll('button');
-        let line = `Row ${i+1}: `;
+      for (let row of rowList) {
+        const line = getPatternLine(row.querySelectorAll('button'));
 
-        for (let j = 0; j < bits.length; j++) {
-          line += translateStitch(bits[j].textContent);
+        // Skip this line if it's empty.
+        if (line === '') {
+          continue;
         }
-
-        pattern += `${line}\n`;
+        // If we've seen this line before, do a repeat. Else, add it for later.
+        if (mapOfRows[line] !== undefined) {
+          pattern += `Row ${patternRow}: Repeat row ${mapOfRows[line]}\n`;
+        } else {
+          pattern += `Row ${patternRow}: ${line}\n`;
+          mapOfRows[line] = patternRow;
+        }
+        patternRow++;
       }
       console.log(pattern);
+    }
+
+    function getPatternLine(line) {
+      let pattern = '';
+      for (let i = 0; i < line.length; i++) {
+        pattern += translateStitch(line[i].textContent);
+      }
+      return pattern;
     }
 
     function translateStitch(stitch) {
