@@ -283,9 +283,22 @@
           sequenceCount++;
         } else {
           // This is a new sequence! Add the old one (unless this is the first run) and reset.
-          if (sequenceStitch != 0) {
-            summarizedLine += sequenceStitch + sequenceCount + ' ';
+          if (sequenceCount === 1) {
+            // Ok if this isn't a knit or a purl, we don't say 1.
+            if (sequenceStitch === 'K' || sequenceStitch === 'P') {
+              summarizedLine += sequenceStitch + sequenceCount + ' ';
+            } else {
+              summarizedLine += sequenceStitch + ' ';
+            }
+          } else if (sequenceCount !== 0) {
+            // If this isn't a K or a P, do a better job at the sequenceCount
+            if (sequenceStitch === 'K' || sequenceStitch === 'P') {
+              summarizedLine += sequenceStitch + sequenceCount + ' ';
+            } else {
+              summarizedLine += `(${sequenceStitch})x${sequenceCount} `;
+            }
           }
+
           sequenceStitch = stitch;
           sequenceCount = 1;
         }
