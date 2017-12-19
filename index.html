@@ -7,30 +7,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
       body {
-        margin: 0;
         padding: 0;
         font-family: Helvetica, Arial, sans-serif;
         padding: 24px;
+        max-width: 600px;
+        margin: 0 auto;
       }
 
-      .container {
-        font-size: 30px;
-        line-height: 1.1;
-        letter-spacing: 2px;
+      hr {
+        background-color: #7BE4D5;
+        border: 0px;
+        margin: 14px auto;
+        width: 50%;
+        height: 5px;
+        border-radius: 5px;
+        color: #7ccdea;
       }
-
       header {
+        text-align: center;
+        margin-bottom: 24px;
+      }
+
+      header img {
+        width: 400px;
+      }
+
+      .settings {
         padding-bottom: 24px;
         margin-bottom: 24px;
-        border-bottom: 1px solid #e0e0e0;
         display: flex;
         flex-direction: row;
+        justify-content: center;
       }
-      header > div {
+      .settings > div {
         margin-right: 24px;
       }
 
       /* Input styles from mu-an: https://megamoji.muan.co/ */
+      button {
+        /* Buncha resets */
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        padding: 0;
+        margin: 0;
+      }
+
       label {
         display: block;
         font-weight: bold;
@@ -41,8 +63,9 @@
         font-size: 16px;
         padding: 8px 10px;
         border: 0;
-        background: #f0f0f0;
+        background: #7BE4D5;
       }
+
       input {
         /* ok more padding because the select is bigger */
         padding: 12px;
@@ -53,10 +76,11 @@
       }
 
       .select {
-        position: absolute;
+        position: relative;
         padding: 8px 10px;
-        background: #f0f0f0;
+        background: #7BE4D5;
       }
+      
       select {
         /* Buncha resets */
         border: none;
@@ -77,14 +101,14 @@
         pointer-events: none;
       }
 
-      .container button {
-        /* Buncha resets */
-        background: transparent;
-        border: none;
-        box-shadow: none;
-        padding: 0;
-        margin: 0;
+      .container {
+        text-align: center;
+        font-size: 30px;
+        line-height: 1.1;
+        letter-spacing: 2px;
+      }
 
+      .container button {
         font-size: inherit;
         line-height: inherit;
         letter-spacing: inherit;
@@ -94,6 +118,12 @@
   </head>
   <body>
     <header>
+      <img src="./logo.png" alt="knit-a-stitch">
+      <div>Draw a pattern, get the knitting instructions</div>
+      <hr>
+    </header>
+
+    <div class="settings">
       <div>
         <label for="rows">Grid</label>
         <input id="cols" class="short" type="number" value="12"> x
@@ -113,8 +143,10 @@
         </label>
         </div>
       </div>
-    </header>
+      <button>Get patter</button>
+    </div>
     <div class="container" id="container"></div>
+    <hr>
   </body>
 
   <script>
@@ -141,7 +173,15 @@
 
     function onClick(event) {
       const button = event.target;
+      if (button.localName !== 'button') {
+        return;
+      }
       button.textContent = stitch.value;
+      updateInstructions();
+    }
+
+    function updateInstructions() {
+
     }
   </script>
 </html>
