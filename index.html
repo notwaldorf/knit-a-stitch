@@ -131,6 +131,22 @@
         margin: 14px auto;
         font-family: monospace;
       }
+      footer {
+        text-transform: uppercase;
+        font-size: 10px;
+        letter-spacing: 2px;
+        line-height: 2;
+        text-align: center;
+        margin: 14px auto;
+      }
+      a:link, a:visited {
+        color: #E91E63;
+      }
+      a:hover {
+        background: #7BE4D5;
+        text-decoration: none;
+        color: black;
+      }
     </style>
   </head>
   <body>
@@ -167,9 +183,16 @@
       </div>
     </div>
     <div class="container" id="container"></div>
-    <hr>
+    <hr hidden id="thatHR">
     <div id="patternOutput"></div>
-  </body>
+    <hr>
+    <footer>
+      made for <span>🎄</span> by <a href="https://twitter.com/notwaldorf">monica</a>.
+        inspired by <a href="https://twitter.com/kosamari">mariko's</a>
+        <a href="https://kosamari.github.io/sweaterify/">sweaterify</a> and
+        <a href="https://twitter.com/muanchiou">mu-an's</a> <a href="http://megamoji.muan.co/">megamoji.</a>
+      find this on <a href="https://github.com/notwaldorf/knit-a-stitch">github</a>
+    </footer>
 
   <script>
     colsInput.addEventListener('input', updateGrid);
@@ -236,7 +259,9 @@
         }
         patternRow++;
       }
-      patternOutput.textContent = pattern;
+
+      thatHR.hidden = pattern.trim() === '';
+      patternOutput.textContent = `${pattern}`;
     }
 
     function getPatternLine(line) {
