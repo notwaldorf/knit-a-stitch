@@ -14,7 +14,15 @@ container.addEventListener('mouseover', function(event) {
     onClick(event);
   }
 })
-updateGrid();
+
+
+// If there is a location, parse it.
+if (window.location.hash) {
+  // This calls updateGrid with the right size;
+  parsePattern(decodeURIComponent(window.location.hash.slice(1)));
+} else {
+  updateGrid();
+}
 
 function updateGrid() {
   let numRows = parseInt(rowsInput.value);
@@ -30,7 +38,6 @@ function updateGrid() {
   // I have no idea why this 8 works btw.
   const fontSizeThatFits = width / numCols - 8;
   container.style.fontSize = Math.min(fontSize, fontSizeThatFits) + 'px';
-  console.log(container.style.fontSize);
 
   // Don't lose the existing content. Add or remove rows from the end as needed.
   const currentRows = container.querySelectorAll('div.row').length;
@@ -98,14 +105,18 @@ function getPattern() {
   let pattern = '';
   let mapOfRows = {};
   let patternRow = 1;
+  let fullState = '';  // to encode in the hash.
   const rowList = container.querySelectorAll('div.row');
   for (let row of rowList) {
-    const line = getPatternLine(row.querySelectorAll('button'));
+    const [full, line] = getPatternLine(row.querySelectorAll('button'));
 
     // Skip this line if it's empty.
     if (line === '') {
       continue;
     }
+
+    fullState += full + '\n';
+
     // If we've seen this line before, do a repeat. Else, add it for later.
     if (mapOfRows[line] !== undefined) {
       pattern += `Row ${patternRow}: Repeat row ${mapOfRows[line]}\n`;
@@ -118,6 +129,8 @@ function getPattern() {
 
   thatHR.hidden = pattern.trim() === '';
   patternOutput.textContent = `${pattern}`;
+
+  window.location.hash = `#${encodeURIComponent(fullState)}`;
 }
 
 function getPatternLine(line) {
@@ -127,7 +140,7 @@ function getPatternLine(line) {
   }
 
   // Can we summarize repeated consecutive stitches?
-  return summarize(pattern);
+  return [pattern, summarize(pattern)];
 }
 
 function translateStitch(stitch) {
@@ -146,6 +159,28 @@ function translateStitch(stitch) {
       break;
     case '＼':
       return 'SSK '
+      break;
+    default:
+      return ''
+  }
+}
+
+function translateText(text) {
+  switch (text.toLowerCase()) {
+    case 'k':
+      return '✖️'
+      break;
+    case 'p':
+      return '➖'
+      break;
+    case 'yo':
+      return '🔘'
+      break;
+    case 'k2tog':
+      return '／'
+      break;
+    case 'ssk':
+      return '＼'
       break;
     default:
       return ''
@@ -189,4 +224,32 @@ function summarize(line) {
     summarizedLine += sequenceStitch + sequenceCount + ' ';
   }
   return summarizedLine;
+}
+
+// TODO: this function really sucks and duplicates things a billion times.
+// But it's also midnight and maybe I don't care that much?
+function parsePattern(pattern) {
+  console.log('applying', pattern);
+  const lines = pattern.trim().split('\n');
+
+  // First, make the grid the right size.
+  rowsInput.value = lines.length;
+  let longestRow = 0;
+
+  for (line of lines) {
+    const row = line.trim().split(' ');
+    longestRow = Math.max(longestRow, row.length);
+  }
+  colsInput.value = longestRow;
+  updateGrid();
+
+  // Now fill it in.
+  const allRows = container.querySelectorAll('div.row');
+  for (let i = 0; i < lines.length; i++) {
+    const row = lines[i].trim().split(' ');
+    const allCols = allRows[i].children;
+    for (let j = 0; j < row.length; j++) {
+      allCols[j].textContent = translateText(row[j]);
+    }
+  }
 }
