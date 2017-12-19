@@ -19,7 +19,13 @@ container.addEventListener('mouseover', function(event) {
 // If there is a location, parse it.
 if (window.location.hash) {
   // This calls updateGrid with the right size;
-  parsePattern(decodeURIComponent(window.location.hash.slice(1)));
+  try {
+    const decoded = atob(window.location.hash.slice(1));
+    parsePattern(decodeURIComponent(decoded));
+  } catch(err) {
+    window.location.hash = 'not-a-valid-pattern-url';
+    updateGrid();
+  }
 } else {
   updateGrid();
 }
@@ -125,7 +131,8 @@ function getPattern() {
     patternRow++;
   }
 
-  window.location.hash = `#${encodeURIComponent(fullState)}`;
+  const encoded = btoa(encodeURIComponent(fullState));
+  window.location.hash = `#${encoded}`;
   patternLink.href = window.location.href;
   patternOutput.textContent = `${pattern}`;
   thatHR.hidden = patternLink.hidden = pattern.trim() === '';
