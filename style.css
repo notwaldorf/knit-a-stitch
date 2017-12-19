@@ -1,0 +1,141 @@
+* {
+  box-sizing: border-box;
+}
+body {
+  padding: 0;
+  font-family: Helvetica, Arial, sans-serif;
+  padding: 24px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+hr {
+  background-color: #7BE4D5;
+  border: 0px;
+  margin: 14px auto;
+  width: 50%;
+  height: 5px;
+  border-radius: 5px;
+  color: #7ccdea;
+}
+header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+header img {
+  width: 400px;
+}
+
+.settings {
+  padding-bottom: 24px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+.settings > div {
+  margin-right: 24px;
+}
+
+/* Input styles from mu-an: https://megamoji.muan.co/ */
+input, .settings button, select {
+  display: inline-block;
+  height: 40px;
+}
+
+button {
+  /* Buncha resets */
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  margin: 0;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+input, .settings button {
+  font-size: 16px;
+  padding: 8px 10px;
+  border: 0;
+  background: #7BE4D5;
+}
+
+input.short {
+  width: 60px;
+}
+
+.select {
+  position: relative;
+  background: #7BE4D5;
+}
+
+select {
+  /* Buncha resets */
+  border: none;
+  box-shadow: none;
+  background: transparent;
+  background-image: none;
+  -webkit-appearance: none;
+  font-size: 16px;
+  /* Leave enough space for the dropdown */
+  padding-right: 40px;
+  padding-left: 14px;
+  z-index: 100;
+}
+
+.select span {
+  position: absolute;
+  right: 14px;
+  top: 14px;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.settings button {
+  font-size: 14px;
+  background: #E91E63;
+  color: white;
+  cursor: pointer;
+}
+
+.container {
+  text-align: center;
+  font-size: 30px;
+  line-height: 1.1;
+  letter-spacing: 2px;
+}
+
+.container button {
+  font-size: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+}
+#patternOutput {
+  white-space: pre;
+  max-width: 400px;
+  margin: 14px auto;
+  font-family: monospace;
+}
+footer {
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 2px;
+  line-height: 2;
+  text-align: center;
+  margin: 14px auto;
+}
+a:link, a:visited {
+  color: #E91E63;
+}
+a:hover {
+  background: #7BE4D5;
+  text-decoration: none;
+  color: black;
+}
