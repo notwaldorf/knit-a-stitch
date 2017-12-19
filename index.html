@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Hello!</title>
+    <title>knit-a-stitch</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -13,50 +13,114 @@
         padding: 24px;
       }
 
-      header {
-        padding-bottom: 24px;
-        margin-bottom: 24px;
-        border-bottom: 1px solid #e0e0e0;
-      }
-
-      label {
-        display: block;
-        font-weight: bold;
-        margin-bottom: 5px;
-      }
-
-      /* Input styles from mu-an: https://megamoji.muan.co/ */
-      input {
-        padding: 8px 10px;
-        border: 0;
-        background: #f0f0f0;
-      }
-      input.short {
-        width: 60px;
-      }
-
       .container {
         font-size: 30px;
         line-height: 1.1;
         letter-spacing: 2px;
       }
 
+      header {
+        padding-bottom: 24px;
+        margin-bottom: 24px;
+        border-bottom: 1px solid #e0e0e0;
+        display: flex;
+        flex-direction: row;
+      }
+      header > div {
+        margin-right: 24px;
+      }
+
+      /* Input styles from mu-an: https://megamoji.muan.co/ */
+      label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+
+      input {
+        font-size: 16px;
+        padding: 8px 10px;
+        border: 0;
+        background: #f0f0f0;
+      }
+      input {
+        /* ok more padding because the select is bigger */
+        padding: 12px;
+      }
+
+      input.short {
+        width: 60px;
+      }
+
+      .select {
+        position: absolute;
+        padding: 8px 10px;
+        background: #f0f0f0;
+      }
+      select {
+        /* Buncha resets */
+        border: none;
+        box-shadow: none;
+        background: transparent;
+        background-image: none;
+        -webkit-appearance: none;
+        font-size: 16px;
+        /* Leave enough space for the dropdown */
+        padding-right: 40px;
+        z-index: 100;
+      }
+      .select span {
+        position: absolute;
+        right: 14px;
+        top: 14px;
+        z-index: 1;
+        pointer-events: none;
+      }
+
+      .container button {
+        /* Buncha resets */
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        padding: 0;
+        margin: 0;
+
+        font-size: inherit;
+        line-height: inherit;
+        letter-spacing: inherit;
+        cursor: pointer;
+      }
     </style>
   </head>
   <body>
     <header>
+      <div>
         <label for="rows">Grid</label>
         <input id="cols" class="short" type="number" value="12"> x
         <input id="rows" class="short" type="number" value="12">
+      </div>
+      <div>
+        <label>Stitch</label>
+        <div class="select">
+          <span>▼</span>
+          <select id="stitch">
+            <option value="✖️">✖️ (knit)</option>
+            <option value="➖">➖ (purl)</option>
+            <option value="🔘">🔘 (yo)</option>
+            <option value="／">／ (k2tog)</option>
+            <option value="＼">＼ (ssk)</option>
+          </select>
+        </label>
+        </div>
+      </div>
     </header>
-    <div class="container" id="container">
-      <span>⬜️</span>
-    </div>
+    <div class="container" id="container"></div>
   </body>
 
   <script>
     cols.addEventListener('input', updateGrid);
     rows.addEventListener('input', updateGrid);
+    container.addEventListener('click', onClick);
     updateGrid();
 
     function updateGrid() {
@@ -68,11 +132,16 @@
         const div = document.createElement('div');
         container.appendChild(div);
         for (let j = 0; j < numCols; j++) {
-          const span = document.createElement('span');
+          const span = document.createElement('button');
           span.textContent = '⬜️';
           div.appendChild(span);
         }
       }
+    }
+
+    function onClick(event) {
+      const button = event.target;
+      button.textContent = stitch.value;
     }
   </script>
 </html>
