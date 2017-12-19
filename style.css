@@ -123,21 +123,27 @@ select {
 .container {
   text-align: center;
   font-size: 30px;
-  line-height: 1.1;
-  letter-spacing: 2px;
+  line-height: 1;
+  letter-spacing: 0px;
+  -webkit-user-select: none;  /* Chrome all / Safari all */
+  -moz-user-select: none;     /* Firefox all */
+  -ms-user-select: none;      /* IE 10+ */
+  user-select: none;          /* Likely future */
 }
 
-.container button {
+.container .stitch {
   font-size: inherit;
   line-height: inherit;
   letter-spacing: inherit;
   cursor: pointer;
+  display: inline-block;
+  margin: 2px;
 }
 #patternLink {
   text-align: center;
   display: block;
   width: 150px;
-  margin: 0 auto; 
+  margin: 0 auto;
 }
 #patternOutput {
   white-space: pre;
@@ -147,7 +153,7 @@ select {
 }
 footer {
   text-transform: uppercase;
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 2px;
   line-height: 2;
   text-align: center;

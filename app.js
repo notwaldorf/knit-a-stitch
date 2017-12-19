@@ -41,7 +41,7 @@ function updateGrid() {
 
   // Do we need to resize the font?
   const width = container.getBoundingClientRect().width;
-  const fontSizeThatFits = Math.floor(width / numCols) - 2;
+  const fontSizeThatFits = Math.floor(width / numCols) - 4;
   container.style.fontSize = fontSizeThatFits + 'px';
 
   // Don't lose the existing content. Add or remove rows from the end as needed.
@@ -65,7 +65,7 @@ function updateGrid() {
   // Now deal with the columns.
   const allRows = container.querySelectorAll('div.row');
   const currentCols = allRows.length > 0 ?
-      allRows[0].querySelectorAll('button').length : 0;
+      allRows[0].querySelectorAll('.stitch').length : 0;
 
   if (numCols > currentCols) {
     // Add a new column in every row.
@@ -84,7 +84,8 @@ function updateGrid() {
 
 function addThisManyColumns(node, num) {
   for (let i = 0; i < num; i++) {
-    const btn = document.createElement('button');
+    const btn = document.createElement('span');
+    btn.className = 'stitch';
     btn.textContent = '⬜️';
     node.appendChild(btn);
   }
@@ -99,11 +100,11 @@ function deleteLastChildThisManyTimes(node, num) {
 }
 
 function onClick(event) {
-  const button = event.target;
-  if (button.localName !== 'button') {
+  const stitch = event.target;
+  if (stitch.className !== 'stitch') {
     return;
   }
-  button.textContent = stitchSelect.value;
+  stitch.textContent = stitchSelect.value;
 }
 
 function getPattern() {
@@ -113,7 +114,7 @@ function getPattern() {
   let fullState = '';  // to encode in the hash.
   const rowList = container.querySelectorAll('div.row');
   for (let row of rowList) {
-    const [full, line] = getPatternLine(row.querySelectorAll('button'));
+    const [full, line] = getPatternLine(row.querySelectorAll('.stitch'));
 
     // Skip this line if it's empty.
     if (line === '') {

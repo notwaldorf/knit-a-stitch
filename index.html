@@ -1,15 +1,33 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <title>knit-a-stitch</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="eescription" content="Draw a pattern, get the knitting instructions.">
     <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#fff">
+    <link rel="shortcut icon" href="./images/favicon.ico">
+    <!-- This is surreal every time -->
+    <!-- Add to homescreen for Chrome on Android. Fallback for manifest.json -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="knit-a-stitch">
+    <!-- Add to homescreen for Safari on iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="knit-a-stitch">
+    <!-- Homescreen icons -->
+    <link rel="apple-touch-icon" sizes="192x192" href="./images/manifest/icon-192x192.png">
+    <!-- Tile icon for Windows 8 (144x144 + tile color) -->
+    <meta name="msapplication-TileImage" content="./images/manifest/icon-192x192.png">
+    <meta name="msapplication-TileColor" content="#E91E63">
+    <meta name="msapplication-tap-highlight" content="no">
   </head>
   <body>
     <header>
-      <img src="./logo.png" alt="knit-a-stitch">
+      <img src="./images/logo.png" alt="knit-a-stitch">
       <div>Draw a pattern, get the knitting instructions.</div>
       <hr>
     </header>
@@ -42,7 +60,7 @@
     </div>
     <div class="container" id="container"></div>
     <hr hidden id="thatHR">
-    <div><a hidden id="patternLink" target="_blank">Link to pattern</a></div>
+    <div><a hidden id="patternLink" target="_blank" rel="noopener">Link to pattern</a></div>
     <div id="patternOutput"></div>
     <hr>
     <footer>
@@ -54,4 +72,14 @@
     </footer>
 
   <script src="app.js"></script>
+  <!-- <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/knit-a-stitch/sw.js', {scope: '/knit-a-stitch/'}).then(_ => {
+        console.log('service worker is cool 🐳');
+      }).catch(e => {
+        console.error('service worker is not so cool 🔥', e);
+        throw e;
+      });
+    }
+  </script> -->
 </html>
