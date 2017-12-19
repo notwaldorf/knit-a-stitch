@@ -36,7 +36,7 @@ function updateGrid() {
   const width = container.getBoundingClientRect().width;
   const fontSizeThatFits = Math.floor(width / numCols) - 2;
   container.style.fontSize = fontSizeThatFits + 'px';
-  
+
   // Don't lose the existing content. Add or remove rows from the end as needed.
   const currentRows = container.querySelectorAll('div.row').length;
 
@@ -125,10 +125,10 @@ function getPattern() {
     patternRow++;
   }
 
-  thatHR.hidden = pattern.trim() === '';
-  patternOutput.textContent = `${pattern}`;
-
   window.location.hash = `#${encodeURIComponent(fullState)}`;
+  patternLink.href = window.location.href;
+  patternOutput.textContent = `${pattern}`;
+  thatHR.hidden = patternLink.hidden = pattern.trim() === '';
 }
 
 function getPatternLine(line) {
