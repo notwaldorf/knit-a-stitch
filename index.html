@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hello!</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Helvetica, Arial, sans-serif;
+        padding: 24px;
+      }
+
+      header {
+        padding-bottom: 24px;
+        margin-bottom: 24px;
+        border-bottom: 1px solid #e0e0e0;
+      }
+
+      label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+
+      /* Input styles from mu-an: https://megamoji.muan.co/ */
+      input {
+        padding: 8px 10px;
+        border: 0;
+        background: #f0f0f0;
+      }
+      input.short {
+        width: 60px;
+      }
+
+      .container {
+        font-size: 30px;
+        line-height: 1.1;
+        letter-spacing: 2px;
+      }
+
+    </style>
+  </head>
+  <body>
+    <header>
+        <label for="rows">Grid</label>
+        <input id="cols" class="short" type="number" value="12"> x
+        <input id="rows" class="short" type="number" value="12">
+    </header>
+    <div class="container" id="container">
+      <span>⬜️</span>
+    </div>
+  </body>
+
+  <script>
+    cols.addEventListener('input', updateGrid);
+    rows.addEventListener('input', updateGrid);
+    updateGrid();
+
+    function updateGrid() {
+      container.innerHTML = '';
+      const numRows = parseInt(rows.value);
+      const numCols = parseInt(cols.value);
+
+      for (let i = 0; i < numRows; i++) {
+        const div = document.createElement('div');
+        container.appendChild(div);
+        for (let j = 0; j < numCols; j++) {
+          const span = document.createElement('span');
+          span.textContent = '⬜️';
+          div.appendChild(span);
+        }
+      }
+    }
+  </script>
+</html>
