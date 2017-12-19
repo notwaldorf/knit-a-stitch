@@ -158,9 +158,9 @@
 
     <div class="settings">
       <div>
-        <label for="rows">Grid</label>
-        <input id="colsInput" class="short" type="number" value="12"> x
-        <input id="rowsInput" class="short" type="number" value="12">
+        <label for="rows">Grid (cols x rows)</label>
+        <input id="colsInput" class="short" type="number" value="5"> x
+        <input id="rowsInput" class="short" type="number" value="2">
       </div>
       <div>
         <label>Stitch</label>
@@ -214,19 +214,64 @@
     updateGrid();
 
     function updateGrid() {
-      container.innerHTML = '';
-      const numRows = parseInt(rowsInput.value);
-      const numCols = parseInt(colsInput.value);
+      let numRows = parseInt(rowsInput.value);
+      let numCols = parseInt(colsInput.value);
 
-      for (let i = 0; i < numRows; i++) {
-        const div = document.createElement('div');
-        container.appendChild(div);
-        div.className = 'row'
-        for (let j = 0; j < numCols; j++) {
-          const span = document.createElement('button');
-          span.textContent = '⬜️';
-          div.appendChild(span);
+      // No messing around.
+      if (numRows < 0) numRows = 0;
+      if (numCols < 0) numCols = 0;
+
+      // Don't lose the existing content. Add or remove rows from the end as needed.
+      const currentRows = container.querySelectorAll('div.row').length;
+
+      // Deal with the rows.
+      if (numRows > currentRows) {
+        // Add new ones.
+        const diff = numRows - currentRows;
+        for (let i = 0; i < diff; i++) {
+          const div = document.createElement('div');
+          container.appendChild(div);
+          div.className = 'row'
+          addThisManyColumns(div, numCols);
         }
+      } else if (numRows < currentRows) {
+        // Delete the bonus ones.
+        deleteLastChildThisManyTimes(container, currentRows - numRows);
+      }
+
+      // Now deal with the columns.
+      const allRows = container.querySelectorAll('div.row');
+      const currentCols = allRows.length > 0 ?
+          allRows[0].querySelectorAll('button').length : 0;
+
+      if (numCols > currentCols) {
+        // Add a new column in every row.
+        const diff = numCols - currentCols;
+        for (let i = 0; i < allRows.length; i++) {
+          addThisManyColumns(allRows[i], diff);
+        }
+      } else if (numCols < currentCols) {
+        // Delete columns from every row
+        const diff = currentCols - numCols;
+        for (let i = 0; i < allRows.length; i++) {
+          deleteLastChildThisManyTimes(allRows[i], diff);
+        }
+      }
+    }
+
+    function addThisManyColumns(node, num) {
+      for (let i = 0; i < num; i++) {
+        const btn = document.createElement('button');
+        btn.textContent = '⬜️';
+        node.appendChild(btn);
+      }
+    }
+
+    function deleteLastChildThisManyTimes(node, num) {
+      let deleted = 0;
+      while (deleted !== num) {
+        node.removeChild(node.lastChild);
+        deleted++;
       }
     }
 
