@@ -1,6 +1,6 @@
 (function() {
-  colsInput.addEventListener('input', updateGrid);
-  rowsInput.addEventListener('input', updateGrid);
+  colsInput.addEventListener('change', updateGrid);
+  rowsInput.addEventListener('change', updateGrid);
 
   container.addEventListener('click', onClick);
   container.addEventListener('mousedown', function(event) {
