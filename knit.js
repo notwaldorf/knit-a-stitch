@@ -50,12 +50,6 @@ function updateGrid() {
   if (numRows < 0) numRows = 0;
   if (numCols < 0) numCols = 0;
 
-  // Do we need to resize the font?
-  const width = container.getBoundingClientRect().width;
-  // I don't know why the 6 works tbh.
-  const fontSizeThatFits = Math.floor(width / numCols) - 6;
-  container.style.fontSize = fontSizeThatFits + 'px';
-
   // Don't lose the existing content. Add or remove rows from the end as needed.
   const currentRows = container.querySelectorAll('div.row').length;
 
@@ -91,6 +85,17 @@ function updateGrid() {
     for (let i = 0; i < allRows.length; i++) {
       deleteLastChildThisManyTimes(allRows[i], diff);
     }
+  }
+
+  // Resize the boxes to fit
+  const width = container.getBoundingClientRect().width;
+  // I don't know why the 6 works tbh.
+  const newSize = Math.floor(width / numCols) - 6 + 'px';
+  container.style.fontSize = newSize;
+
+  const stitches = container.querySelectorAll('.stitch');
+  for (let i = 0; i < stitches.length; i++) {
+    stitches[i].style.height = stitches[i].style.width = newSize;
   }
 }
 

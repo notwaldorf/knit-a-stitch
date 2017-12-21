@@ -138,6 +138,7 @@ select {
   cursor: pointer;
   display: inline-block;
   margin: 2px;
+  font-family: monospace;
 }
 #patternLink {
   text-align: center;
