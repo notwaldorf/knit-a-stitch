@@ -16,6 +16,8 @@
       onClick(event);
     }
   });
+  window.onresize = updateGrid;
+
 })();
 
 function onClick(event) {
@@ -52,6 +54,7 @@ function updateGrid() {
   const width = container.getBoundingClientRect().width;
   const fontSizeThatFits = Math.floor(width / numCols) - 4;
   container.style.fontSize = fontSizeThatFits + 'px';
+  //console.log(fontSizeThatFits);
 
   // Don't lose the existing content. Add or remove rows from the end as needed.
   const currentRows = container.querySelectorAll('div.row').length;
