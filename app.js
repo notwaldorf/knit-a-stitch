@@ -55,7 +55,6 @@ function updateGrid() {
   // I don't know why the 6 works tbh.
   const fontSizeThatFits = Math.floor(width / numCols) - 6;
   container.style.fontSize = fontSizeThatFits + 'px';
-  console.log(width, fontSizeThatFits);
 
   // Don't lose the existing content. Add or remove rows from the end as needed.
   const currentRows = container.querySelectorAll('div.row').length;
