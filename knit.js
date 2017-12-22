@@ -136,7 +136,7 @@ function getPattern() {
 
   // Also, validate as you go along. if you have less than 0 stitches in
   // every row it's bad news bears.
-  let numStitches = parseInt(colsInput.value);
+  let totalStitches = parseInt(colsInput.value);
   errorMessage.hidden = true;   // assume good intentions.
   errorMessage.textContent = '';
 
@@ -154,9 +154,9 @@ function getPattern() {
     }
 
     // Validate.
-    numStitches -= getLineDecreases(cols);
-
-    if (numStitches <= 0 && errorMessage.hidden) {
+    totalStitches = getTotalStitchesAfterIncreasesDecreases(totalStitches, cols);
+  
+    if (totalStitches <= 0 && errorMessage.hidden) {
       errorMessage.textContent = `⚠️ You have too many decreases on row ${patternRow}, and end up with a negative number of stitches.`;
       errorMessage.hidden = false;
     }
@@ -191,18 +191,18 @@ function getPatternLine(line) {
   return summarize(pattern);
 }
 
-function getLineDecreases(line) {
-  let decreases = 0;
+function getTotalStitchesAfterIncreasesDecreases(initial, line) {
+  let final = initial;
   for (let i = 0; i < line.length; i++) {
     const text = line[i].textContent;
 
     if (text === '／' || text === '＼') {
-      decreases++;
+      final--;
     } else if (text === '🔘') {
-      decreases--;
+      final++;
     }
   }
-  return decreases;
+  return final;
 }
 
 function parsePattern(pattern) {
