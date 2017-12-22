@@ -116,6 +116,17 @@ function deleteLastChildThisManyTimes(node, num) {
   }
 }
 
+function reset() {
+  const rowList = container.querySelectorAll('div.row');
+  for (let i = 0; i < rowList.length; i++) {
+    let row = rowList[i];
+    const colList = row.querySelectorAll('.stitch');
+    for (let j = 0; j < colList.length; j++) {
+      colList[j].textContent = '✖️';
+    }
+  }
+  stitchSelect.value = '✖️';
+}
 function getPattern() {
   let pattern = '';
   let mapOfRows = {};
