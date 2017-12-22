@@ -206,6 +206,7 @@ function getLineDecreases(line) {
 }
 
 function parsePattern(pattern) {
+  console.log('applying', pattern);
   const lines = pattern.trim().split('\n');
 
   // First, make the grid the right size.
@@ -346,7 +347,7 @@ function unsummarize(line) {
       return stitch;
     } else {
       // repeaded k2tog or yo.
-      const [full, which, count] = stitch.match(/\((.*)\)x(\d)/);
+      const [full, which, count] = stitch.match(/\((.*)\)x(\d+)/);
       expanded += (which + ' ').repeat(count);
     }
   }
