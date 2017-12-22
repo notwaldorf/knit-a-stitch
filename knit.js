@@ -103,7 +103,7 @@ function addThisManyColumns(node, num) {
   for (let i = 0; i < num; i++) {
     const btn = document.createElement('span');
     btn.className = 'stitch';
-    btn.textContent = '⬜️';
+    btn.textContent = '✖️';
     node.appendChild(btn);
   }
 }
