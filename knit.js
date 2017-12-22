@@ -127,21 +127,38 @@ function reset() {
   }
   stitchSelect.value = '✖️';
 }
+
 function getPattern() {
   let pattern = '';
   let mapOfRows = {};
   let patternRow = 1;
   let fullState = '';  // to encode in the hash.
+
+  // Also, validate as you go along. if you have less than 0 stitches in
+  // every row it's bad news bears.
+  let numStitches = parseInt(colsInput.value);
+  errorMessage.hidden = true;   // assume good intentions.
+  errorMessage.textContent = '';
+
   const rowList = container.querySelectorAll('div.row');
 
   // Patterns are read from the bottom row, right corner. Thanks @kosamari!
   for (let i = rowList.length - 1; i >= 0; i--) {
     let row = rowList[i];
-    const line = getPatternLine(row.querySelectorAll('.stitch'));
+    let cols = row.querySelectorAll('.stitch');
+    const line = getPatternLine(cols);
 
     // Skip this line if it's empty.
     if (line === '') {
       continue;
+    }
+
+    // Validate.
+    numStitches -= getLineDecreases(cols);
+
+    if (numStitches <= 0 && errorMessage.hidden) {
+      errorMessage.textContent = `⚠️ You have too many decreases on row ${patternRow}, and end up with a negative number of stitches.`;
+      errorMessage.hidden = false;
     }
 
     // If we've seen this line before, do a repeat. Else, add it for later.
@@ -174,8 +191,21 @@ function getPatternLine(line) {
   return summarize(pattern);
 }
 
+function getLineDecreases(line) {
+  let decreases = 0;
+  for (let i = 0; i < line.length; i++) {
+    const text = line[i].textContent;
+
+    if (text === '／' || text === '＼') {
+      decreases++;
+    } else if (text === '🔘') {
+      decreases--;
+    }
+  }
+  return decreases;
+}
+
 function parsePattern(pattern) {
-  console.log('applying', pattern);
   const lines = pattern.trim().split('\n');
 
   // First, make the grid the right size.
