@@ -122,7 +122,10 @@ function getPattern() {
   let patternRow = 1;
   let fullState = '';  // to encode in the hash.
   const rowList = container.querySelectorAll('div.row');
-  for (let row of rowList) {
+
+  // Patterns are read from the bottom row, right corner. Thanks @kosamari!
+  for (let i = rowList.length - 1; i >= 0; i--) {
+    let row = rowList[i];
     const line = getPatternLine(row.querySelectorAll('.stitch'));
 
     // Skip this line if it's empty.
@@ -151,7 +154,8 @@ function getPattern() {
 
 function getPatternLine(line) {
   let pattern = '';
-  for (let i = 0; i < line.length; i++) {
+  // You read patterns from right to left.
+  for (let i = line.length - 1; i >= 0; i--) {
     pattern += emojiToStitch(line[i].textContent);
   }
 
@@ -177,11 +181,11 @@ function parsePattern(pattern) {
   colsInput.value = longestRow;
   updateGrid();
 
-  // Now fill it in.
   const allRows = container.querySelectorAll('div.row');
   for (let i = 0; i < lines.length; i++) {
     let row = rowData[i];
-    const allCols = allRows[i].children;
+    // The pattern is read backwards, so fill from the bottom
+    const allCols = allRows[allRows.length - 1 - i].children;
 
     // This may be a repeated row.
     if (row.length === 1 && row[0].charAt(0) === 'r') {
@@ -190,7 +194,7 @@ function parsePattern(pattern) {
     }
 
     for (let j = 0; j < row.length; j++) {
-      allCols[j].textContent = stitchToEmoji(row[j]);
+      allCols[allCols.length - 1 - j].textContent = stitchToEmoji(row[j]);
     }
   }
 }
