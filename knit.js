@@ -90,8 +90,9 @@ function updateGrid() {
   // Resize the boxes to fit
   const width = container.getBoundingClientRect().width;
   // I don't know why the 6 works tbh.
-  const newSize = Math.floor(width / numCols) - 6 + 'px';
-  container.style.fontSize = newSize;
+  const newSize = Math.floor(width / numCols) - 6;
+  // In Chrome, emoji can't be bigger than 128px, because then they don't get rendered.
+  container.style.fontSize = Math.min(newSize, 100) + 'px';
 
   const stitches = container.querySelectorAll('.stitch');
   for (let i = 0; i < stitches.length; i++) {
@@ -146,7 +147,7 @@ function getPattern() {
   for (let i = rowList.length - 1; i >= 0; i--) {
     let row = rowList[i];
     let cols = row.querySelectorAll('.stitch');
-    const line = getPatternLine(cols);
+    const line = getPatternLine(cols, patternRow % 2 === 0); // on even rows we flip.
 
     // Skip this line if it's empty.
     if (line === '') {
@@ -155,7 +156,7 @@ function getPattern() {
 
     // Validate.
     totalStitches = getTotalStitchesAfterIncreasesDecreases(totalStitches, cols);
-  
+
     if (totalStitches <= 0 && errorMessage.hidden) {
       errorMessage.textContent = `⚠️ You have too many decreases on row ${patternRow}, and end up with a negative number of stitches.`;
       errorMessage.hidden = false;
@@ -180,12 +181,20 @@ function getPattern() {
   thatHR.hidden = patternLink.hidden = pattern.trim() === '';
 }
 
-function getPatternLine(line) {
+function getPatternLine(line, evenRow) {
   let pattern = '';
-  // You read patterns from right to left.
-  for (let i = line.length - 1; i >= 0; i--) {
-    pattern += emojiToStitch(line[i].textContent);
+  // On odd rows: you read patterns from right to left.
+  // On even rows: you read patterns from left to right.
+  if (evenRow) {
+    for (let i = 0; i < line.length; i++) {
+      pattern += emojiToStitch(line[i].textContent, evenRow);
+    }
+  } else {
+    for (let i = line.length - 1; i >= 0; i--) {
+      pattern += emojiToStitch(line[i].textContent, evenRow);
+    }
   }
+
 
   // Can we summarize repeated consecutive stitches?
   return summarize(pattern);
@@ -206,7 +215,6 @@ function getTotalStitchesAfterIncreasesDecreases(initial, line) {
 }
 
 function parsePattern(pattern) {
-  console.log('applying', pattern);
   const lines = pattern.trim().split('\n');
 
   // First, make the grid the right size.
@@ -235,19 +243,23 @@ function parsePattern(pattern) {
       row = rowData[repeatWhat];
     }
 
+    const evenRow = i % 2 === 1;
     for (let j = 0; j < row.length; j++) {
-      allCols[allCols.length - 1 - j].textContent = stitchToEmoji(row[j]);
+      // On odd rows: you read patterns from right to left.
+      // On even rows: you read patterns from left to right.
+      let stitchIndex = evenRow ? j : allCols.length - 1 - j;
+      allCols[stitchIndex].textContent = stitchToEmoji(row[j], evenRow);
     }
   }
 }
 
-function emojiToStitch(stitch) {
+function emojiToStitch(stitch, evenRow) {
   switch (stitch) {
     case '✖️':
-      return 'K '
+      return evenRow ? 'P ' : 'K ';  // on even rows, we flip.
       break;
     case '➖':
-      return 'P '
+      return evenRow ? 'K ' : 'P ';  // on even rows, we flip.
       break;
     case '🔘':
       return 'YO '
@@ -263,13 +275,13 @@ function emojiToStitch(stitch) {
   }
 }
 
-function stitchToEmoji(text) {
+function stitchToEmoji(text, evenRow) {
   switch (text.toLowerCase()) {
     case 'k':
-      return '✖️'
+      return evenRow ? '➖' : '✖️';  // on even rows, we flip.
       break;
     case 'p':
-      return '➖'
+      return evenRow ? '✖️' : '➖';  // on even rows, we flip.
       break;
     case 'yo':
       return '🔘'
